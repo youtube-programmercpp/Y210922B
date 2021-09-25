@@ -140,10 +140,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BinaryOperator.h" />
+    <ClInclude Include="Calc.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="ValueWindow.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BinaryOperator.cpp" />
     <ClCompile Include="Calc.cpp" />
+    <ClCompile Include="ValueWindow.cpp" />
+    <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Calc.rc" />

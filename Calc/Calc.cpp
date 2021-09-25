@@ -1,58 +1,122 @@
 ﻿// Calc.cpp : アプリケーションのエントリ ポイントを定義します。
-#include <Windows.h>
+#include "Calc.h"
 #include "resource.h"
 
-#include <string>
-
-std::wstring s;//外部変数…このようなやり方は駄目
-
-INT_PTR CALLBACK DialogProc
-( HWND   hDlg   
-, UINT   message
-, WPARAM wParam 
-, LPARAM lParam 
-)
+void Calc::perform_calculation()
 {
-	switch (message) {
-	case WM_INITDIALOG:
-		return true;
-	case WM_COMMAND:
-		switch (LOWORD(wParam)) {
-		case IDCANCEL:
-			EndDialog(hDlg, IDCANCEL);
-			return true;
-		case IDC_BUTTON_Num_0: s.append(1, L'0'); SetDlgItemTextW(hDlg, IDC_EDIT1, s.c_str()); return true;
-		case IDC_BUTTON_Num_1: s.append(1, L'1'); SetDlgItemTextW(hDlg, IDC_EDIT1, s.c_str()); return true;
-		case IDC_BUTTON_Num_2: s.append(1, L'2'); SetDlgItemTextW(hDlg, IDC_EDIT1, s.c_str()); return true;
-		case IDC_BUTTON_Num_3: s.append(1, L'3'); SetDlgItemTextW(hDlg, IDC_EDIT1, s.c_str()); return true;
-		case IDC_BUTTON_Num_4: s.append(1, L'4'); SetDlgItemTextW(hDlg, IDC_EDIT1, s.c_str()); return true;
-		case IDC_BUTTON_Num_5: s.append(1, L'5'); SetDlgItemTextW(hDlg, IDC_EDIT1, s.c_str()); return true;
-		case IDC_BUTTON_Num_6: s.append(1, L'6'); SetDlgItemTextW(hDlg, IDC_EDIT1, s.c_str()); return true;
-		case IDC_BUTTON_Num_7: s.append(1, L'7'); SetDlgItemTextW(hDlg, IDC_EDIT1, s.c_str()); return true;
-		case IDC_BUTTON_Num_8: s.append(1, L'8'); SetDlgItemTextW(hDlg, IDC_EDIT1, s.c_str()); return true;
-		case IDC_BUTTON_Num_9: s.append(1, L'9'); SetDlgItemTextW(hDlg, IDC_EDIT1, s.c_str()); return true;
-		default:
-			return false;
-		}
-	default:
-		return false;
+	if (op) {
+		value = op->compute(lhs, value);
 	}
 }
 
-
-int APIENTRY wWinMain
-( _In_     HINSTANCE hInstance    //インスタンスハンドル（モジュールハンドル）
-, _In_opt_ HINSTANCE hPrevInstance//必ず nullptr になる
-, _In_     LPWSTR    lpCmdLine    
-, _In_     int       nCmdShow     
-)
+void Calc::operator_state(HWND hDlg, WPARAM wParam)
 {
-	DialogBoxParamW
-	( /*_In_opt_ HINSTANCE hInstance     */hInstance     
-	, /*_In_     LPCWSTR   lpTemplateName*/MAKEINTRESOURCEW(IDD_DIALOG_Calc)
-	, /*_In_opt_ HWND      hWndParent    */nullptr
-	, /*_In_opt_ DLGPROC   lpDialogFunc  */DialogProc
-	, /*_In_     LPARAM    dwInitParam   */0
-	);
-	return 0;//0は正常終了、0 以外はエラー
+	switch (LOWORD(wParam)) {
+	case IDCANCEL:
+		EndDialog(hDlg, IDCANCEL);
+		break;
+	case IDC_BUTTON_Num_0: value = std::wstring(1, L'0'); state = &Calc::first_digit_state     ; break;
+	case IDC_BUTTON_Num_1: value = std::wstring(1, L'1'); state = &Calc::following_digits_state; break;
+	case IDC_BUTTON_Num_2: value = std::wstring(1, L'2'); state = &Calc::following_digits_state; break;
+	case IDC_BUTTON_Num_3: value = std::wstring(1, L'3'); state = &Calc::following_digits_state; break;
+	case IDC_BUTTON_Num_4: value = std::wstring(1, L'4'); state = &Calc::following_digits_state; break;
+	case IDC_BUTTON_Num_5: value = std::wstring(1, L'5'); state = &Calc::following_digits_state; break;
+	case IDC_BUTTON_Num_6: value = std::wstring(1, L'6'); state = &Calc::following_digits_state; break;
+	case IDC_BUTTON_Num_7: value = std::wstring(1, L'7'); state = &Calc::following_digits_state; break;
+	case IDC_BUTTON_Num_8: value = std::wstring(1, L'8'); state = &Calc::following_digits_state; break;
+	case IDC_BUTTON_Num_9: value = std::wstring(1, L'9'); state = &Calc::following_digits_state; break;
+	case IDC_BUTTON_OpAdd: op = &op_Add; break;
+	case IDC_BUTTON_OpSub: op = &op_Sub; break;
+	case IDC_BUTTON_OpMul: op = &op_Mul; break;
+	case IDC_BUTTON_OpDiv: op = &op_Div; break;
+	case IDC_BUTTON_Dot: value = L"0."; state = &Calc::fractional_part_state; break;
+	}
 }
+
+void Calc::fractional_part_state(HWND hDlg, WPARAM wParam)
+{
+	switch (LOWORD(wParam)) {
+	case IDCANCEL:
+		EndDialog(hDlg, IDCANCEL);
+		break;
+	case IDC_BUTTON_Num_0: value += L'0'; break;
+	case IDC_BUTTON_Num_1: value += L'1'; break;
+	case IDC_BUTTON_Num_2: value += L'2'; break;
+	case IDC_BUTTON_Num_3: value += L'3'; break;
+	case IDC_BUTTON_Num_4: value += L'4'; break;
+	case IDC_BUTTON_Num_5: value += L'5'; break;
+	case IDC_BUTTON_Num_6: value += L'6'; break;
+	case IDC_BUTTON_Num_7: value += L'7'; break;
+	case IDC_BUTTON_Num_8: value += L'8'; break;
+	case IDC_BUTTON_Num_9: value += L'9'; break;
+	case IDC_BUTTON_OpAdd: perform_calculation(); lhs = value; op = &op_Add; state = &Calc::operator_state; break;
+	case IDC_BUTTON_OpSub: perform_calculation(); lhs = value; op = &op_Sub; state = &Calc::operator_state; break;
+	case IDC_BUTTON_OpMul: perform_calculation(); lhs = value; op = &op_Mul; state = &Calc::operator_state; break;
+	case IDC_BUTTON_OpDiv: perform_calculation(); lhs = value; op = &op_Div; state = &Calc::operator_state; break;
+	case IDC_BUTTON_Dot: break;
+	}
+}
+
+void Calc::following_digits_state(HWND hDlg, WPARAM wParam)
+{
+	switch (LOWORD(wParam)) {
+	case IDCANCEL:
+		EndDialog(hDlg, IDCANCEL);
+		break;
+	case IDC_BUTTON_Num_0: value += L'0'; break;
+	case IDC_BUTTON_Num_1: value += L'1'; break;
+	case IDC_BUTTON_Num_2: value += L'2'; break;
+	case IDC_BUTTON_Num_3: value += L'3'; break;
+	case IDC_BUTTON_Num_4: value += L'4'; break;
+	case IDC_BUTTON_Num_5: value += L'5'; break;
+	case IDC_BUTTON_Num_6: value += L'6'; break;
+	case IDC_BUTTON_Num_7: value += L'7'; break;
+	case IDC_BUTTON_Num_8: value += L'8'; break;
+	case IDC_BUTTON_Num_9: value += L'9'; break;
+	case IDC_BUTTON_OpAdd: perform_calculation(); lhs = value; op = &op_Add; state = &Calc::operator_state; break;
+	case IDC_BUTTON_OpSub: perform_calculation(); lhs = value; op = &op_Sub; state = &Calc::operator_state; break;
+	case IDC_BUTTON_OpMul: perform_calculation(); lhs = value; op = &op_Mul; state = &Calc::operator_state; break;
+	case IDC_BUTTON_OpDiv: perform_calculation(); lhs = value; op = &op_Div; state = &Calc::operator_state; break;
+	case IDC_BUTTON_Dot: value += L'.'; state = &Calc::fractional_part_state; break;
+	}
+}
+void Calc::first_digit_state(HWND hDlg, WPARAM wParam)
+{
+	switch (LOWORD(wParam)) {
+	case IDCANCEL:
+		EndDialog(hDlg, IDCANCEL);
+		break;
+	case IDC_BUTTON_Num_0: break;
+	case IDC_BUTTON_Num_1: value = std::wstring(1, L'1'); state = &Calc::following_digits_state; break;
+	case IDC_BUTTON_Num_2: value = std::wstring(1, L'2'); state = &Calc::following_digits_state; break;
+	case IDC_BUTTON_Num_3: value = std::wstring(1, L'3'); state = &Calc::following_digits_state; break;
+	case IDC_BUTTON_Num_4: value = std::wstring(1, L'4'); state = &Calc::following_digits_state; break;
+	case IDC_BUTTON_Num_5: value = std::wstring(1, L'5'); state = &Calc::following_digits_state; break;
+	case IDC_BUTTON_Num_6: value = std::wstring(1, L'6'); state = &Calc::following_digits_state; break;
+	case IDC_BUTTON_Num_7: value = std::wstring(1, L'7'); state = &Calc::following_digits_state; break;
+	case IDC_BUTTON_Num_8: value = std::wstring(1, L'8'); state = &Calc::following_digits_state; break;
+	case IDC_BUTTON_Num_9: value = std::wstring(1, L'9'); state = &Calc::following_digits_state; break;
+	case IDC_BUTTON_OpAdd: perform_calculation(); lhs = value; op = &op_Add; state = &Calc::operator_state; break;
+	case IDC_BUTTON_OpSub: perform_calculation(); lhs = value; op = &op_Sub; state = &Calc::operator_state; break;
+	case IDC_BUTTON_OpMul: perform_calculation(); lhs = value; op = &op_Mul; state = &Calc::operator_state; break;
+	case IDC_BUTTON_OpDiv: perform_calculation(); lhs = value; op = &op_Div; state = &Calc::operator_state; break;
+	case IDC_BUTTON_Dot: value += L'.'; state = &Calc::fractional_part_state; break;
+	}
+}
+Calc::Calc(ValueWindow&& value) noexcept
+	: value(std::move(value))
+	, state(&Calc::first_digit_state)
+	, op   ()
+{
+}
+//FSM
+//finite  有限
+//state   状態
+//machine 機械
+void Calc::Handle_WM_COMMAND(HWND hDlg, WPARAM wParam)
+{
+	(this->*state)(hDlg, wParam);
+}
+
+
+
