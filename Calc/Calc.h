@@ -1,16 +1,22 @@
 #include "ValueWindow.h"
 #include "BinaryOperator.h"
+#include "TypeButton.h"
 class Calc {
 	std::wstring lhs;
-	ValueWindow value;
-	void (Calc::*state)(HWND hDlg, WPARAM wParam);
+	ValueWindow  value;
+	TypeButton   type ;
+	void (Calc::*state)(HWND hDlg, WORD nID);
 	const BinaryOperator* op;
 	void perform_calculation();
-	void operator_state(HWND hDlg, WPARAM wParam);
-	void fractional_part_state(HWND hDlg, WPARAM wParam);
-	void following_digits_state(HWND hDlg, WPARAM wParam);
-	void first_digit_state(HWND hDlg, WPARAM wParam);
+	void operator_state        (HWND hDlg, WORD nID);
+	void fractional_part_state (HWND hDlg, WORD nID);
+	void following_digits_state(HWND hDlg, WORD nID);
+	void first_digit_state     (HWND hDlg, WORD nID);
 public:
-	Calc(ValueWindow&& value) noexcept;
+	Calc
+	( ValueWindow&& value
+	, TypeButton && type 
+	) noexcept;
+	void EnableDisableButtonsByType(HWND hDlg);
 	void Handle_WM_COMMAND(HWND hDlg, WPARAM wParam);
 };

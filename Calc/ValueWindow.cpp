@@ -1,4 +1,5 @@
 #include "ValueWindow.h"
+#include "ValueType.h"
 
 ValueWindow::ValueWindow(ValueWindow&& r) noexcept
 	: hWnd (r.hWnd )
@@ -52,4 +53,16 @@ auto ValueWindow::operator=(const std::wstring& s)->ValueWindow&
 {
 	SetWindowTextW(hWnd, s.c_str());
 	return *this;
+}
+
+void ValueWindow::ChangeType(ValueType t) const
+{
+	switch (t) {
+	using namespace std;
+	case ValueType::t_DOUBLE: break;
+	case ValueType::t_QWORD : SetWindowTextW(hWnd, to_wstring(stoull(*this)).c_str()); break;
+	case ValueType::t_DWORD : SetWindowTextW(hWnd, to_wstring(stoull(*this) & ULONG_MAX).c_str()); break;
+	case ValueType::t_WORD  : SetWindowTextW(hWnd, to_wstring(stoul (*this) & USHRT_MAX).c_str()); break;
+	case ValueType::t_BYTE  : SetWindowTextW(hWnd, to_wstring(stoul (*this) & UCHAR_MAX).c_str()); break;
+	}
 }

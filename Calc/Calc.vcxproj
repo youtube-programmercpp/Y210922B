@@ -143,11 +143,14 @@
     <ClInclude Include="BinaryOperator.h" />
     <ClInclude Include="Calc.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="TypeButton.h" />
+    <ClInclude Include="ValueType.h" />
     <ClInclude Include="ValueWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BinaryOperator.cpp" />
     <ClCompile Include="Calc.cpp" />
+    <ClCompile Include="TypeButton.cpp" />
     <ClCompile Include="ValueWindow.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>

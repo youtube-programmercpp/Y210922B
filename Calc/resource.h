@@ -25,6 +25,14 @@
 #define IDC_BUTTON_OpEqu                1020
 #define IDC_BUTTON_Clear                1021
 #define IDC_BUTTON_OpDiv                1022
+#define IDC_BUTTON_Num_A                1023
+#define IDC_BUTTON_Num_B                1024
+#define IDC_BUTTON_Num_C                1025
+#define IDC_BUTTON_Num_D                1026
+#define IDC_BUTTON_Num_E                1027
+#define IDC_BUTTON_Num_F                1028
+#define IDC_BUTTON1                     1029
+#define IDC_BUTTON_Type                 1029
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -34,7 +42,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        133
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1008
+#define _APS_NEXT_CONTROL_VALUE         1030
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

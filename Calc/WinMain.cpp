@@ -24,14 +24,17 @@ int APIENTRY wWinMain
 				try {
 					const HWND hValueWindow = GetDlgItem(hDlg, IDC_EDIT1);
 					SetWindowTextW(hValueWindow, L"0");
-					auto p = new Calc(ValueWindow(hValueWindow));
+					auto p = new Calc
+					( ValueWindow(hValueWindow)
+					, TypeButton(GetDlgItem(hDlg, IDC_BUTTON_Type))
+					);
 					SetLastError(0);
-					if (SetWindowLongPtrW(hDlg, DWLP_USER, LONG_PTR(p)) == 0) {
-						if (GetLastError()) {
-							delete p;
-							EndDialog(hDlg, IDCANCEL);
-						}
+					if (SetWindowLongPtrW(hDlg, DWLP_USER, LONG_PTR(p)) == 0 && GetLastError()) {
+						delete p;
+						EndDialog(hDlg, IDCANCEL);
 					}
+					else
+						p->EnableDisableButtonsByType(hDlg);
 				}
 				catch (const std::exception& e) {
 					OutputDebugStringA(e.what());
